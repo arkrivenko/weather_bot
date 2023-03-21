@@ -115,7 +115,7 @@ async def get_weather_data(lat, lon, message):
             day_wind_speed, day_status, evening, evening_temp, evening_wind_speed, evening_status, night, night_temp, \
             night_wind_speed, night_status = await get_forecast_data(forecasts)
         await message.answer(f"Температура: <b>{temp}°C</b>, ощущается как <b>{feels_like}°C</b>\n"
-                             f"<em>{weather_status.get(status).title()}\n</em>"
+                             f"<em><ins>{weather_status.get(status).title()}</ins></em>\n"
                              f"\nвосход🌅 - <b>{rise_begin}</b>, закат🌆 - <b>{sunset}</b>\n"
                              f"\n<em>Утро</em>🌇 ({morning_status}):\nтемпература🌡️ - <b>{morning_temp}°C</b>, "
                              f"скорость ветра🌬️ - <b>{morning_wind_speed}м/с</b>\n"
@@ -139,11 +139,12 @@ async def get_full_weather_data(lat, lon, message):
         weather_data = response.json()
         forecasts = weather_data.get("forecasts")
         for elem in forecasts[1:]:
-            date = elem.get("date")
+            date_dirt = elem.get("date").split("-")
+            date = ".".join([date_dirt[2], date_dirt[1]])
             sunset, rise_begin, parts, morning, morning_temp, morning_wind_speed, morning_status, day, day_temp, \
                 day_wind_speed, day_status, evening, evening_temp, evening_wind_speed, evening_status, night, \
                 night_temp, night_wind_speed, night_status = await get_forecast_data(elem)
-            await message.answer(f"Прогноз на <b><ins>{date}</ins></b>:\nвосход🌅 - <b>{rise_begin}</b>, "
+            await message.answer(f"<b>Прогноз на <em><ins>{date}</ins></em></b>:\nвосход🌅 - <b>{rise_begin}</b>, "
                                  f"закат🌆 - <b>{sunset}</b>\n"
                                  f"\n<em>Утро</em>🌇 ({morning_status}):\nтемпература🌡️ - <b>{morning_temp}°C</b>, "
                                  f"скорость ветра🌬️ - <b>{morning_wind_speed}м/с</b>\n"
